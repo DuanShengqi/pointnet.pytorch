@@ -1,4 +1,6 @@
-from __future__ import print_function
+import sys
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+sys.path.append('../')
 from show3d_balls import showpoints
 import argparse
 import numpy as np
@@ -40,7 +42,7 @@ cmap = plt.cm.get_cmap("hsv", 10)
 cmap = np.array([cmap(i) for i in range(10)])[:, :3]
 gt = cmap[seg.numpy() - 1, :]
 
-state_dict = torch.load(opt.model)
+state_dict = torch.load(opt.model, map_location=torch.device('cpu'))
 classifier = PointNetDenseCls(k= state_dict['conv4.weight'].size()[0])
 classifier.load_state_dict(state_dict)
 classifier.eval()
@@ -57,3 +59,4 @@ pred_color = cmap[pred_choice.numpy()[0], :]
 
 #print(pred_color.shape)
 showpoints(point_np, gt, pred_color)
+

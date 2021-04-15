@@ -1,7 +1,11 @@
 import numpy as np
 import ctypes as ct
-import cv2
+
 import sys
+# sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+import cv2
+import os
+
 showsz = 800
 mousex, mousey = 0.5, 0.5
 zoom = 1.0

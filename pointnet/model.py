@@ -31,6 +31,7 @@ class STN3d(nn.Module):
         x = F.relu(self.bn1(self.conv1(x)))
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
+        # print(x.size())
         x = torch.max(x, 2, keepdim=True)[0]
         x = x.view(-1, 1024)
 
@@ -41,9 +42,9 @@ class STN3d(nn.Module):
         iden = Variable(torch.from_numpy(np.array([1,0,0,0,1,0,0,0,1]).astype(np.float32))).view(1,9).repeat(batchsize,1)
         if x.is_cuda:
             iden = iden.cuda()
-        x = x + iden
+        x = x + iden  #这是什么操作？？
         x = x.view(-1, 3, 3)
-        return x
+        return x  #32*3*3
 
 
 class STNkd(nn.Module):
@@ -118,13 +119,13 @@ class PointNetfeat(nn.Module):
         pointfeat = x
         x = F.relu(self.bn2(self.conv2(x)))
         x = self.bn3(self.conv3(x))
-        x = torch.max(x, 2, keepdim=True)[0]
-        x = x.view(-1, 1024)
+        x = torch.max(x, 2, keepdim=True)[0] #maxpooling 操作
+        x = x.view(-1, 1024) #batchsize * 1024
         if self.global_feat:
             return x, trans, trans_feat
         else:
             x = x.view(-1, 1024, 1).repeat(1, 1, n_pts)
-            return torch.cat([x, pointfeat], 1), trans, trans_feat
+            return torch.cat([x, pointfeat], 1), trans, trans_feat  #将全局特征和局部特征进行一个融合
 
 class PointNetCls(nn.Module):
     def __init__(self, k=2, feature_transform=False):
